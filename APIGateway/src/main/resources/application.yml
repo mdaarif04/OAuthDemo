@@ -1,0 +1,38 @@
+server:
+      port: 9000
+      
+      
+spring:
+   zipkin:
+      base-url: http://localhost:9411
+   application:
+       name: APIGateway
+   cloud:
+        gateway:
+          routes:
+            - id:  user-ms
+              uri: lb://user-ms
+              predicates:
+                - Path=/user/**
+            - id: contact-ms
+              uri: lb://contact-ms
+              predicates:
+                - Path=/contacts/**
+eureka:
+ client:
+   register-with-eureka: true
+   fetch-registry: true  
+   service-url:
+     defaultZone: http://localhost:8763/eureka
+
+
+management:
+   tracing:
+    enabled: true
+    sampling:
+       probability: 1.0 # Adjust as needed (e.g., 0.1 for 10% sampling)
+   endpoints:
+     web:
+      exposure:
+         include: "health,info,metrics,prometheus,trace" # Expose relevant actuator endpoints
+
